@@ -10,13 +10,13 @@
 
 int main(int argc, char *argv[]){
 	/*"General Mode":
-		./pm_model_checker -ge system.txt basis_size
+		./pm_model_checker -ge system.txt basis_size lattice_height basis_file
 		in this mode, all the moves are provided by the user, and the
 		lts file is not needed.
 	 */
 
 	/*"Mu-calculus Mode":
-		./pm_model_checker -mu system.txt basis_size lts.aut
+		./pm_model_checker -mu system.txt basis_size lts.aut lattice_height basis_file
 		(observe the -mu flag)
 		in this mode, the tool appends automatically the basic symbolic E-moves
 		for 'diamond' and 'box' operators to the file "system.txt", which is
@@ -28,8 +28,11 @@ int main(int argc, char *argv[]){
 		return 1;
 	}
 	else{
-		if (argc < 4){
-			fprintf(stderr, "usage: ./pm_model_checker [flag] [args]\n");
+		if (argc < 5){
+			fprintf(stderr, "accepted command line arguments:\n");
+			fprintf(stderr, "./pm_model_checker -ge [system_file] [basis_size] [lattice_height] [basis_file]\n\n");
+			fprintf(stderr, "./pm_model_checker -mu [system_file] [basis_size] [lts_file] [lattice_height] [basis_file]\n\n");
+			fprintf(stderr, "./pm_model_checker -normalize [system_file] [output_file]\n");
 			return 1;
 		}
 		else{
@@ -39,6 +42,23 @@ int main(int argc, char *argv[]){
 					//run the parser and check if parsing succeeded
 					if (yyparse() != 0){
 						return 1;
+					}
+
+					//read [basis_file] and store data into a vector
+					ifstream basis_input;
+					basis_input.open(argv[5]);
+					vector<string> basis_names;
+					if (basis_input.fail()){
+						fprintf(stderr, "error: basis file not found\n");
+						return 1;
+					}
+					else{
+						string line;
+						while (getline(basis_input, line)){
+							std::string::iterator end_pos = std::remove(line.begin(), line.end(), ' ');
+							line.erase(end_pos, line.end());
+							basis_names.push_back(line);
+						}
 					}
 
 					vector<Equation*> *eqs_moves = root->get_equations();  //get system + moves
@@ -72,15 +92,17 @@ int main(int argc, char *argv[]){
 						cout << endl;
 
 						//create a Solver object and solve the system
-						Solver slv(min_max_eq, atoi(argv[3]), min_max_eq.size(), composite_moves, 1);
+						Solver slv(min_max_eq, atoi(argv[3]), min_max_eq.size(), composite_moves, atoi(argv[4]));
 						vector< vector < vector<int> > > final_matrix_worklist = slv.solve_system_worklist();
 						cout << "WORKLIST'S OUTCOME:" << endl;
 						Solver::print_pm_matrix(final_matrix_worklist, atoi(argv[3]), eq_counter);
+						Solver::pretty_print_pm_matrix(final_matrix_worklist, atoi(argv[3]), eq_counter, atoi(argv[4]), basis_names);
 
 						cout << endl << endl;
 						vector< vector < vector<int> > > final_matrix_chaotic = slv.solve_system_chaotic_iteration();
 						cout << "CHAOTIC ITERATION'S OUTCOME:" << endl;
 						Solver::print_pm_matrix(final_matrix_chaotic, atoi(argv[3]), eq_counter);
+						Solver::pretty_print_pm_matrix(final_matrix_worklist, atoi(argv[3]), eq_counter, atoi(argv[4]), basis_names);
 					}
 
 					else{
@@ -126,6 +148,24 @@ int main(int argc, char *argv[]){
 						vector<string> missing_moves = ic.get_missing_moves();
 
 						if (missing_moves.size() == 0){
+							//read [basis_file] and store data into a vector
+							ifstream basis_input;
+							basis_input.open(argv[5]);
+							vector<string> basis_names;
+							if (basis_input.fail()){
+								fprintf(stderr, "error: basis file not found\n");
+								return 1;
+							}
+							else{
+								string line;
+								while (getline(basis_input, line)){
+									std::string::iterator end_pos = std::remove(line.begin(), line.end(), ' ');
+									line.erase(end_pos, line.end());
+									basis_names.push_back(line);
+								}
+							}
+
+
 							map<int,string> min_max_eq; //type o each equation ("=min" or "=max")
 
 							int eq_counter = 0; //count actual equations (like x1 =min etc...) and discard moves
@@ -150,15 +190,17 @@ int main(int argc, char *argv[]){
 							cout << endl;
 
 							//create a Solver object and solve the system
-							Solver slv(min_max_eq, atoi(argv[3]), min_max_eq.size(), composite_moves, 1);
+							Solver slv(min_max_eq, atoi(argv[3]), min_max_eq.size(), composite_moves, atoi(argv[4]));
 							vector< vector < vector<int> > > final_matrix_worklist = slv.solve_system_worklist();
 							cout << "WORKLIST'S OUTCOME:" << endl;
 							Solver::print_pm_matrix(final_matrix_worklist, atoi(argv[3]), eq_counter);
+							Solver::pretty_print_pm_matrix(final_matrix_worklist, atoi(argv[3]), eq_counter, atoi(argv[4]), basis_names);
 
 							cout << endl << endl;
 							vector< vector < vector<int> > > final_matrix_chaotic = slv.solve_system_chaotic_iteration();
 							cout << "CHAOTIC ITERATION'S OUTCOME:" << endl;
 							Solver::print_pm_matrix(final_matrix_chaotic, atoi(argv[3]), eq_counter);
+							Solver::pretty_print_pm_matrix(final_matrix_worklist, atoi(argv[3]), eq_counter, atoi(argv[4]), basis_names);
 						}
 
 						else{
@@ -181,12 +223,13 @@ int main(int argc, char *argv[]){
 			}
 			else if (strcmp(argv[1], "-normalize") == 0){
 				yyin = fopen(argv[2], "r");
-				FILE *normalization_output = fopen(argv[3], "w");
 				if (yyin){
 					//run the parser and check if parsing succeeded
 					if (yyparse() != 0){
 						return 1;
 					}
+
+					FILE *normalization_output = fopen(argv[3], "w");
 
 					vector<Equation*> *eqs = root->get_equations();  //get system + moves
 					vector<Equation*> normalized_equations;
@@ -215,11 +258,15 @@ int main(int argc, char *argv[]){
 						fprintf(normalization_output, "\n");
 					}
 				}
+				else{
+					fprintf(stderr, "error: file with equational system not found\n");
+					return 1;
+				}
 			}
 
 
 			else{
-				fprintf(stderr, "error: wrong flag, use -ge or -mu\n");
+				fprintf(stderr, "error: unrecognized flag, use -ge, -mu or -normalize\n");
 				return 1;
 			}
 		}

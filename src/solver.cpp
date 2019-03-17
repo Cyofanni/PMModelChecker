@@ -1,5 +1,7 @@
 #include "../include/solver.h"
 
+Solver::Solver(){}
+
 Solver::Solver(const map<int,string>& mmeq, int bs, int ss, const map<Position, ExpNode*>& s_em, int lh){
 	min_max_eq = mmeq;
 	basis_size = bs;
@@ -21,14 +23,21 @@ void Solver::comp_symb_prog_meas(const Position &p, ExpNode *formula,
 			int h = atoi(h_str.c_str());
 			int k = atoi(k_str.c_str());
 
-			for (int i = p.get_eq_index(); i < system_size; i++){   //0's before equation index
-				pm_value[i] = prog_meas_matr[h][k][i];
+			if (!is_top(prog_meas_matr[h][k])){
+				for (int i = p.get_eq_index(); i < system_size; i++){
+					pm_value[i] = prog_meas_matr[h][k][i];
+				}
+				for (int i = 0; i < p.get_eq_index(); i++){
+					pm_value[i] = 0;       //0's before equation index
+				}
+				for (int i = p.get_eq_index(); i < system_size; i++){
+					pm_value[i] = pm_value[i] + delta[i];
+				}
 			}
-			for (int i = 0; i < p.get_eq_index(); i++){
-				pm_value[i] = 0;
-			}
-			for (int i = p.get_eq_index(); i < system_size; i++){
-				pm_value[i] = pm_value[i] + delta[i];
+			else if (is_top(prog_meas_matr[h][k])){
+				for (int i = 0; i < system_size; i++){
+					pm_value[i] = lattice_height + 1;     //return a * value
+				}
 			}
 
 			return;
@@ -154,12 +163,12 @@ vector< vector < vector<int> > > Solver::solve_system_worklist(){
 
 			if (y != prog_meas_matr[j][k]){
 				//if y is a 'top vector', then obviously  y != prog_meas_matr[j][k]
-				if (is_top(y)){
+				/*if (is_top(y)){
 					for (int c = 0; c < system_size; c++){
 						prog_meas_matr[j][k][c] = lattice_height + 1;
 					}
-				}
-				else{
+				}*/
+				//else{
 					Position p(j, k);
 					map<Position,vector<Position> >::const_iterator iter = depgraph.find(p);  //find dependencies of (b_j, k)
 					if (iter != depgraph.end()){
@@ -170,7 +179,12 @@ vector< vector < vector<int> > > Solver::solve_system_worklist(){
 						}
 						prog_meas_matr[j][k] = y;
 					}
-				}
+				//}
+			}
+		}
+		else if (is_top(prog_meas_matr[j][k])){
+			for (int c = 0; c < system_size; c++){
+				prog_meas_matr[j][k][c] = lattice_height + 1;
 			}
 		}
 		/*cout << "CURRENT MATRIX IS:" << endl;
@@ -209,48 +223,13 @@ vector< vector < vector<int> > > Solver::solve_system_chaotic_iteration(){
 
 	vector<vector<int> > temp_vars(basis_size*system_size, vector<int>(system_size));
 
-	/*for (int i = 0; i < basis_size; i++){
-		for (int j = 0; j < system_size; j++){
-			temp_vars[i*system_size + j] = prog_meas_matr[i][j];
-		}
-	}
-
-
-
-	for (int i = 0; i < basis_size; i++){
-		for (int j = 0; j < system_size; j++){
-			Position p(i, j);
-			//compute the delta
-			vector<int> delta;
-			map<int,string>::const_iterator it = min_max_eq.find(p.get_eq_index());
-			string fixpoint = it->second;   //"=min" or "=max"
-			if (fixpoint == "=max"){		//null vector
-				for (int k = 0; k < system_size; k++){
-					delta.push_back(0);
-				}
-			}
-			else if (fixpoint == "=min"){	//some 1's
-				for (int k = 0; k < system_size; k++){
-					if (k != p.get_eq_index()){
-						delta.push_back(0);
-					}
-					else{
-						delta.push_back(1);
-					}
-				}
-			}
-			map<Position,ExpNode*>::const_iterator formula_iter = symb_E_moves.find(p);
-			ExpNode *formula = formula_iter->second;
-			vector<int> pm_value(system_size, 0);	//store progress measure's value
-
-			comp_symb_prog_meas(p, formula, delta, prog_meas_matr, pm_value);
-			prog_meas_matr[i][j] = pm_value;
-		}
-	}*/
-
 	int iteration_counter = 0;
 
-	while(true){
+	bool changed = true;
+	while (changed){
+		/*if (iteration_counter > 50){
+			break;
+		}*/
 		for (int i = 0; i < basis_size; i++){
 			for (int j = 0; j < system_size; j++){
 				temp_vars[i*system_size + j] = prog_meas_matr[i][j];
@@ -285,20 +264,25 @@ vector< vector < vector<int> > > Solver::solve_system_chaotic_iteration(){
 					vector<int> pm_value(system_size, 0);	//store progress measure's value
 					comp_symb_prog_meas(p, formula, delta, prog_meas_matr, pm_value);
 
-					if (is_top(pm_value)){
+					/*if (is_top(pm_value)){
 						for (int c = 0; c < system_size; c++){
 							prog_meas_matr[i][j][c] = lattice_height + 1;
 						}
-					}
-					else{
+					}*/
+					//else{
 						prog_meas_matr[i][j] = pm_value;
+					//}
+				}
+				else if (is_top(prog_meas_matr[i][j])){
+					for (int c = 0; c < system_size; c++){
+						prog_meas_matr[i][j][c] = lattice_height + 1;
 					}
 				}
 			}
 		}
 
-		bool changed = false;
-		for (int i = 0; i < basis_size; i++){
+		changed = false;
+		for (int i = 0; i < basis_size and changed == false; i++){
 			for (int j = 0; j < system_size; j++){
 				if(temp_vars[i*system_size + j] != prog_meas_matr[i][j]){
 					changed = true;
@@ -321,9 +305,9 @@ vector< vector < vector<int> > > Solver::solve_system_chaotic_iteration(){
 		cout << "**************************************" << endl << endl;*/
 
 
-		if (changed == false){
+		/*if (changed == false){
 			break;
-		}
+		}*/
 
 		iteration_counter++;
 	}
@@ -357,7 +341,7 @@ void Solver::print_pm_matrix(vector< vector < vector<int> > > pm_matrix, int bs,
 		for (int j = 0; j < ss; j++){
 			cout << "[ ";
 			for (int k = 0; k < ss; k++){  //loop on number of equations
-					cout << pm_matrix[i][j][k] << " ";
+				cout << pm_matrix[i][j][k] << " ";
 			}
 			cout << "]";
 		}
@@ -365,6 +349,26 @@ void Solver::print_pm_matrix(vector< vector < vector<int> > > pm_matrix, int bs,
 	}
 }
 
-
-/*int main(){
-}*/
+void Solver::pretty_print_pm_matrix(vector< vector < vector<int> > > pm_matrix, int bs, int ss,
+										int lh, const vector<string> &basis_names){
+	cout << "PROGRESS MEASURE MATRIX IS:" << endl;
+	for (int i = 0; i < bs; i++){	//loop on basis elements
+		for (int j = 0; j < ss; j++){
+			cout << "[ ";
+			bool istop = false;
+			for (int k = 0; k < ss and !istop; k++){
+				if (pm_matrix[i][j][k] > lh){
+					istop = true;
+				}
+			}
+			if (istop){
+				cout << "DON'T KNOW (*)";
+			}
+			else{
+				cout << basis_names[i] << " <= " << "u_" << j << " ";
+			}
+			cout << "]";
+		}
+		cout << endl;
+	}
+}
