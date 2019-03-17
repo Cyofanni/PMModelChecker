@@ -7,10 +7,10 @@
 #include <string>
 #include <iterator>
 #include <climits>
-#include "position.h"
-#include "operator.h"
-#include "move_composer.h"
-#include "dependency_graph.h"
+#include "../include/position.h"
+#include "../include/operator.h"
+#include "../include/move_composer.h"
+#include "../include/dependency_graph.h"
 
 using namespace std;
 
@@ -29,7 +29,9 @@ private:
 
 	bool is_top(const vector<int> &pm_value) const;  //return 'true' if a given R(b)(i) has the Top value ('star')
 
+
 public:
+	Solver();
 	Solver(const map<int,string>& mmeq, int bs, int ss, const map<Position, ExpNode*> &s_em, int lh);
 
 	//should find the formula in the map Position:Formulae
@@ -39,6 +41,8 @@ public:
 	//lexicographic (<) order between vectors
 	static bool lex_vectors(vector<int> a, vector<int> b, unsigned int from);
 	static void print_pm_matrix(vector< vector < vector<int> > > pm_matrix, int bs, int ss);
+	static void pretty_print_pm_matrix(vector< vector < vector<int> > > pm_matrix, int bs, int ss,
+										int lh, const vector<string> &basis_names);
 };
 
 #endif
