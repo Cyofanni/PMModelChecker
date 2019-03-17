@@ -14,7 +14,7 @@
 
 using namespace std;
 
-/*Solver doesn't need the original system, just the type of each equations*/
+/*Solver doesn't need the original system, just the type of each equation*/
 class Solver{
 private:
 	map<int,string> min_max_eq; //type (min/max) of each equation
