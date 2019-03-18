@@ -9,16 +9,19 @@
 
 using namespace std;
 
-class MuCalculusMoveGenerator{
+class MuCalculusMoveGenerator
+{
 private:
 	const char *lts_file;
 	int basis_size;
+
 public:
 	MuCalculusMoveGenerator(const char *lts_file, int basis_size);
 
 	//generate and return moves as strings, for each basis element
 	//if isbox == true => generate moves for 'box'
-	vector<string> generate_box_diamond_move(bool isbox);
+	vector<string>
+	generate_box_diamond_move(bool isbox);
 };
 
 #endif

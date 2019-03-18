@@ -12,23 +12,28 @@
 
 using namespace std;
 
-class DependencyGraph{
+class DependencyGraph
+{
 private:
-    //adjacency lists for each position
+	//adjacency lists for each position
 	map<Position,vector<Position> > pred;
 	/*Predecessor map: {{(b,i): [(b',j),(b'',k) etc...]}}
 	  maps a position to its predecessors
-	*/
+	 */
 
 	//gets position and its formula
-	void add_to_pred(Position pos, ExpNode *formula);
+	void
+	add_to_pred(Position pos, ExpNode *formula);
+	
 public:
 	//build adjacency lists inside the constructor
 	DependencyGraph(const map<Position,ExpNode*> &symb_E_moves, int basis_size, int system_size);
 
-	map<Position,vector<Position> > get_dependency_graph() const;
+	map<Position,vector<Position> >
+	get_dependency_graph() const;
 
-	void print_dependency_graph();
+	void
+	print_dependency_graph();
 };
 
 #endif

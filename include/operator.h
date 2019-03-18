@@ -5,7 +5,8 @@
 
 #include "expr_move.h"
 
-class Operator{
+class Operator
+{
 private:
 	string name;
 	//unsigned int arity;
@@ -15,11 +16,16 @@ private:
 public:
 	Operator();
 	Operator(string n, unsigned int be, /*int a,*/ ExpNode* f);
-	string get_name() const;
-	unsigned int get_basis_element() const;
+
+	string
+	get_name() const;
+
+	unsigned int
+	get_basis_element() const;
 
 	//unsigned int get_arity() const;
-	ExpNode* get_formula() const;
+	ExpNode*
+	get_formula() const;
 };
 
 #endif

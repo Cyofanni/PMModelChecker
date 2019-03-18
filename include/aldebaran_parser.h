@@ -12,15 +12,21 @@ using namespace std;
 
 class AldebaranNotFoundException{};
 
-class AldebaranParser{
+class AldebaranParser
+{
 private:
 	ifstream input;
 	map<int,vector<int> > lts_edges;
+
 public:
 	AldebaranParser();
 	AldebaranParser(const char *input_path);
-	void parse_input(); //fills 'lts_edges'
-	map<int,vector<int> > get_lts_edges() const;
+
+	void
+	parse_input(); //fills 'lts_edges'
+
+	map<int,vector<int> >
+	get_lts_edges() const;
 };
 
 #endif
