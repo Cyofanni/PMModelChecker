@@ -10,7 +10,7 @@
 
 using namespace std;
 
-//used for expression and symbolic E-moves
+//used for expressions and symbolic E-moves
 class ExpNode
 {
 private:
