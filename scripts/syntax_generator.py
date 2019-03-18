@@ -150,33 +150,39 @@ class BisonWriter:
 
 
 def main():
-	if (len(sys.argv) < 4):
-		print "usage: python syntax_generator.py [configuration_file] [flex_output_file] [bison_output_file]"
+	if (len(sys.argv) < 2):
+		print "usage: python syntax_generator.py [configuration_file]"
 		sys.exit()
 
-	opr = OperatorReader(sys.argv[1])
-	operator_map = opr.read()
+	if os.path.isfile(sys.argv[1]) == True:
+		opr = OperatorReader(sys.argv[1])
+		operator_map = opr.read()
 
-	#generate Flex input
-	fw = FlexWriter(operator_map, sys.argv[2])
+		#generate Flex input
+		fw = FlexWriter(operator_map, "src/mylex.l")
 
-	fw.flex_header1_printer()
-	fw.flex_custom_macro_printer();
-	fw.flex_std_macro_printer();
-	fw.flex_header2_printer()
-	fw.flex_rules_printer();
-	fw.flex_error_handling_printer()
-	fw.file_closer()
-	#bison will need the map for *_TOK tokens tokens
-	macro_tokens = fw.get_macro_token_map()
+		fw.flex_header1_printer()
+		fw.flex_custom_macro_printer();
+		fw.flex_std_macro_printer();
+		fw.flex_header2_printer()
+		fw.flex_rules_printer();
+		fw.flex_error_handling_printer()
+		fw.file_closer()
+		#bison will need the map for *_TOK tokens tokens
+		macro_tokens = fw.get_macro_token_map()
 
-	#generate Bison input
-	bw = BisonWriter(macro_tokens, operator_map, sys.argv[3])
-	bw.bison_header_printer()
-	bw.bison_definitions_printer()
-	bw.bison_grammar_printer()
-	bw.bison_error_handling_printer()
-	bw.file_closer()
+		#generate Bison input
+		bw = BisonWriter(macro_tokens, operator_map, "src/myparser.yacc")
+		bw.bison_header_printer()
+		bw.bison_definitions_printer()
+		bw.bison_grammar_printer()
+		bw.bison_error_handling_printer()
+		bw.file_closer()
+
+		#os.rename(sys.argv[2], "src/mylex.l")
+		#os.rename(sys.argv[3], "src/myparser.yacc")
+	else:
+		print "error: syntax configuration file not found"
 
 
 

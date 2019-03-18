@@ -84,9 +84,15 @@ def main():
 	if (len(sys.argv) < 3):
 		print "usage: python game_to_system.py [parity_game_file] [output_file] [winner]"
 		sys.exit()
-	gmr = GMReader(sys.argv[1])
-	bsgenwr = BooleanSystemGeneratorWriter(sys.argv[3], gmr, sys.argv[2])
-	bsgenwr.system_writer()
+
+	if os.path.isfile(sys.argv[1]) == True:
+		gmr = GMReader(sys.argv[1])
+		bsgenwr = BooleanSystemGeneratorWriter(sys.argv[3], gmr, sys.argv[2])
+		bsgenwr.system_writer()
+	else:
+		print "error: parity game file not found"
+
+
 
 if __name__ == "__main__":
 	main()
