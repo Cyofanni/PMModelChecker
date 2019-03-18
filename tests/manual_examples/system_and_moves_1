@@ -1,0 +1,9 @@
+#the output should be * * *
+x0 =max x1 and x2
+x1 =min x1 or x0
+	x2   =max x2  and  x0
+#DON'T KNOW * 3
+phi_true_and = 	[	 true	 ,0] and [ true ,1]
+phi_true_or = [true,0] or [ 	true,  1]
+
+#let's run it
