@@ -25,12 +25,18 @@ private:
 	void
 	add_to_pred(Position pos, ExpNode *formula);
 	
+	void
+	strong_connect(Position &p, int &ind, stack<Position> &st);
+	
 public:
 	//build adjacency lists inside the constructor
 	DependencyGraph(const map<Position,ExpNode*> &symb_E_moves, int basis_size, int system_size);
 
 	map<Position,vector<Position> >
 	get_dependency_graph() const;
+	
+	vector< vector<Position> >
+	strong_conn_components();
 
 	void
 	print_dependency_graph();

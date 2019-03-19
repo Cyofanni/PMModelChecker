@@ -27,6 +27,16 @@ DependencyGraph::add_to_pred(Position pos, ExpNode *formula)
 	}
 }
 
+void
+DependencyGraph::strong_connect(Position &p, int &ind, stack<Position> &st)
+{
+	p.set_index(ind);
+	p.set_lowlink(ind);
+	ind += 1;
+	st.push(p);
+	p.set_on_stack(true);
+}
+
 DependencyGraph::DependencyGraph(const map<Position,ExpNode*> &symb_E_moves, int basis_size, int system_size)
 {
 	for (int i = 0; i < system_size; i++)
@@ -55,6 +65,21 @@ map<Position,vector<Position> >
 DependencyGraph::get_dependency_graph() const
 {
 	return pred;
+}
+
+vector< vector<Position> >
+DependencyGraph::strong_conn_components()
+{
+	int ind = 0;
+	stack<Position> st;
+	map<Position,vector<Position> >::iterator loop_iter;
+	//loop on vertices
+	for (loop_iter = pred.begin(); loop_iter != pred.end(); loop_iter++){
+		if (loop_iter->first.is_defined() == false){
+			strong_connect(const_cast<Position&>(loop_iter->first), ind, st);
+		
+		}
+	}
 }
 
 void
