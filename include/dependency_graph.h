@@ -26,7 +26,7 @@ private:
 	add_to_pred(Position pos, ExpNode *formula);
 	
 	void
-	strong_connect(Position &p, int &ind, stack<Position> &st);
+	strong_connect(Position &p, int &ind, stack<Position> &st, vector<Position> &curr_component);
 	
 public:
 	//build adjacency lists inside the constructor

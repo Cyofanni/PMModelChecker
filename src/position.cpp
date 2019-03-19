@@ -42,6 +42,12 @@ Position::set_index(int i) const
 	index = i;
 }
 
+int
+Position::get_lowlink() const
+{
+	return lowlink;
+}
+
 void
 Position::set_lowlink(int l) const
 {

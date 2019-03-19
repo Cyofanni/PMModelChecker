@@ -28,13 +28,50 @@ DependencyGraph::add_to_pred(Position pos, ExpNode *formula)
 }
 
 void
-DependencyGraph::strong_connect(Position &p, int &ind, stack<Position> &st)
+DependencyGraph::strong_connect(Position &p, int &ind, stack<Position> &st, vector<Position> &curr_component)
 {
 	p.set_index(ind);
 	p.set_lowlink(ind);
 	ind += 1;
 	st.push(p);
 	p.set_on_stack(true);
+	
+	map<Position,vector<Position> >::iterator p_iter = pred.find(p);
+	vector<Position> p_predecessors = p_iter->second;
+	
+	for (int i = 0; i < p_predecessors.size(); i++)
+	{
+		if (p_predecessors[i].get_index() == -1)
+		{
+			strong_connect(p_predecessors[i], ind, st, curr_component);
+		}
+		else if (p_predecessors[i].is_on_stack())
+		{
+			if (p.get_lowlink() <= p_predecessors[i].get_index())
+			{
+				//p.set_lowlink(p.get_lowlink());
+			}
+			else
+			{
+				p.set_lowlink(p_predecessors[i].get_index());
+			}
+		}
+	}
+	
+	if (p.get_lowlink() == p.get_index())
+	{
+		do
+		{
+			Position w = st.top();
+			st.pop();
+			w.set_on_stack(false);
+				
+		}
+		while (true);
+		
+	}
+	
+	
 }
 
 DependencyGraph::DependencyGraph(const map<Position,ExpNode*> &symb_E_moves, int basis_size, int system_size)
@@ -76,8 +113,8 @@ DependencyGraph::strong_conn_components()
 	//loop on vertices
 	for (loop_iter = pred.begin(); loop_iter != pred.end(); loop_iter++){
 		if (loop_iter->first.is_defined() == false){
-			strong_connect(const_cast<Position&>(loop_iter->first), ind, st);
-		
+			vector<Position> curr_component;
+			strong_connect(const_cast<Position&>(loop_iter->first), ind, st, curr_component);	
 		}
 	}
 }

@@ -14,7 +14,7 @@ private:
 
 public:
 	Position();
-	Position(int b_el, int eq_in, int i=0, int l=0, bool d=0, bool o=0);
+	Position(int b_el, int eq_in, int i=-1, int l=-1, bool d=false, bool o=false);
 	Position(const Position& p);
 
 	Position&
@@ -31,6 +31,9 @@ public:
 	
 	void
 	set_index(int i) const;
+	
+	int
+	get_lowlink() const;
 	
 	void
 	set_lowlink(int l) const;
