@@ -93,7 +93,8 @@ public:
 		{
 			cout << "Current SCC: ";
 			GraphNode *w;
-			do{
+			do
+			{
 				w = S.top();
 				S.pop();
 				w->onstack = false;
@@ -105,13 +106,15 @@ public:
 	}
 
 
-	void tarjan(){
+	void tarjan()
+	{
 		int ind = 0;
 		stack<GraphNode*> S;
 
 		//loop on vertices
 		map<GraphNode*,vector<GraphNode*> >::iterator loop_iter;
-		for (loop_iter = adj.begin(); loop_iter != adj.end(); loop_iter++){
+		for (loop_iter = adj.begin(); loop_iter != adj.end(); loop_iter++)
+		{
 			if (loop_iter->first->index < 0)
 			{
 				strong_connect(const_cast<GraphNode*>(loop_iter->first), ind, S);
@@ -145,9 +148,11 @@ int main(){
 	Graph graph(adj);
 
 	map<GraphNode*,vector<GraphNode*> >::iterator loop_iter;
-	for (loop_iter = graph.adj.begin(); loop_iter != graph.adj.end(); loop_iter++){
+	for (loop_iter = graph.adj.begin(); loop_iter != graph.adj.end(); loop_iter++)
+	{
 		cout << loop_iter->first->n << ": ";
-		for (int i = 0; i < loop_iter->second.size(); i++){
+		for (int i = 0; i < loop_iter->second.size(); i++)
+		{
 			cout << loop_iter->second[i]->n << " ";
 		}
 		cout << endl;
