@@ -66,7 +66,8 @@ public:
 		this->adj = adj;
 	}
 
-	void strong_connect(GraphNode *v, int &ind, stack<GraphNode*> &S)
+	void strong_connect(GraphNode *v, int &ind, stack<GraphNode*> &S, set<GraphNode*> &Sset,
+						int &comp_counter, vector<set<GraphNode*> > &components)
 	{
 		v->index = ind;
 		v->lowlink = ind;
@@ -80,7 +81,7 @@ public:
 		{
 			if (adj.find(v)->second[k]->index < 0)
 			{
-				strong_connect(adj.find(v)->second[k], ind, S);
+				strong_connect(adj.find(v)->second[k], ind, S, Sset, comp_counter, components);
 				v->lowlink = std::min(v->lowlink, adj.find(v)->second[k]->lowlink);
 			}
 			else if (adj.find(v)->second[k]->onstack == true)
@@ -91,36 +92,55 @@ public:
 
 		if (v->lowlink == v->index)
 		{
-			cout << "Current SCC: ";
+			Sset = set<GraphNode*>();
+			comp_counter++;
+			cout << "SCC number " << comp_counter << ": ";
 			GraphNode *w;
 			do
 			{
 				w = S.top();
 				S.pop();
+				Sset.insert(w);
 				w->onstack = false;
 				cout << w->n << " ";
 			}
 			while (w != v);
+			components.push_back(Sset);
+
 			cout << endl;
 		}
 	}
 
 
-	void tarjan()
+	vector<set<GraphNode*> > tarjan()
 	{
 		int ind = 0;
 		stack<GraphNode*> S;
-
+		set<GraphNode*> Sset;
+		int comp_counter = 0;
+		vector<set<GraphNode*> > components;
 		//loop on vertices
 		map<GraphNode*,vector<GraphNode*> >::iterator loop_iter;
 		for (loop_iter = adj.begin(); loop_iter != adj.end(); loop_iter++)
 		{
 			if (loop_iter->first->index < 0)
 			{
-				strong_connect(const_cast<GraphNode*>(loop_iter->first), ind, S);
-				cout << endl;
+				strong_connect(const_cast<GraphNode*>(loop_iter->first), ind, S, Sset, comp_counter, components);
 			}
 		}
+
+		/*set<GraphNode*>::iterator set_it;
+		for (int i = 0; i < components.size(); i++)
+		{
+
+			for (set_it = components[i].begin(); set_it != components[i].end(); set_it++)
+			{
+				cout << (*set_it)->n << " ";
+			}
+			cout << endl;
+		}*/
+
+		return components;
 	}
 };
 
@@ -136,14 +156,14 @@ int main(){
 	GraphNode g8(8);
 
 	map<GraphNode*,vector<GraphNode*> > adj;
-	adj[&g1] = {&g3, &g2};
-	adj[&g2] = {&g1};
+	adj[&g1] = {&g2};
+	adj[&g2] = {&g3};
 	adj[&g3] = {&g1};
-	adj[&g4] = {&g3, &g2, &g5};
+	adj[&g4] = {&g2, &g3, &g5};
 	adj[&g5] = {&g4, &g6};
 	adj[&g6] = {&g3, &g7};
 	adj[&g7] = {&g6};
-	adj[&g8] = {&g5, &g7, &g8};
+	adj[&g8] = {&g7, &g8, &g5};
 
 	Graph graph(adj);
 
@@ -159,5 +179,5 @@ int main(){
 	}
 
 	cout << endl << endl;
-	graph.tarjan();
+	vector<set<GraphNode*> > strongly_connected_components = graph.tarjan();
 }
