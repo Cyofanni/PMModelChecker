@@ -6,6 +6,7 @@
 #include <list>
 #include <stack>
 #include <map>
+#include <set>
 #include "position.h"
 #include "expr_move.h"
 #include "move_composer.h"
@@ -16,27 +17,32 @@ class DependencyGraph
 {
 private:
 	//adjacency lists for each position
-	map<Position,vector<Position> > pred;
+	map<Position*,vector<Position*> > pred;
 	/*Predecessor map: {{(b,i): [(b',j),(b'',k) etc...]}}
 	  maps a position to its predecessors
 	 */
 
 	//gets position and its formula
-	void
-	add_to_pred(Position pos, ExpNode *formula);
+	
+	map<Position*,vector<Position*> >::iterator find_pos_in_pred(const Position& pos);
 	
 	void
-	strong_connect(Position &p, int &ind, stack<Position> &st, vector<Position> &curr_component);
+	add_to_pred(const Position &pos, ExpNode *formula);
+	
+	void
+	strong_connect(Position *p, int &ind, stack<Position*> &st, set<Position*> &Sset,
+						int &comp_counter, vector<set<Position*> > &components);
 	
 public:
 	//build adjacency lists inside the constructor
 	DependencyGraph(const map<Position,ExpNode*> &symb_E_moves, int basis_size, int system_size);
+	~DependencyGraph();
 
-	map<Position,vector<Position> >
+	map<Position*,vector<Position*> >
 	get_dependency_graph() const;
 	
-	vector< vector<Position> >
-	strong_conn_components();
+	vector<set<Position*> >
+	tarjan();
 
 	void
 	print_dependency_graph();
