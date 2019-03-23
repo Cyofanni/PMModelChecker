@@ -1,0 +1,5 @@
+x0 =min x0 and x1
+x1 =max x0 or x1
+
+phi_true_and = [true, 0] and [true, 1]
+phi_true_or = [true,0] or [true, 1]
