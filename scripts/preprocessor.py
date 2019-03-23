@@ -3,6 +3,7 @@
 import sys
 import os
 import re
+import tokens
 
 class BasisReader:
 	def __init__(self, basis_file):
@@ -35,11 +36,11 @@ class ConvertedSystemWriter:
 		for line in self._system_file.readlines():
 			line = line.strip()
 			if len(line) > 0:
-				if not (line.startswith('#') or re.match('^x[0-9]+', line) or line.startswith("phi")):
+				if not (line.startswith('#') or re.match('^x[0-9]+', line) or line.startswith(tokens.PHI)):
 					syntax_error = line_counter
 					break
 
-			if line[0:3] == "phi":
+			if line[0:3] == tokens.PHI:
                 		converted_line = ""
 				#handle 'phi' identifier
 				first_underscore_position = 3

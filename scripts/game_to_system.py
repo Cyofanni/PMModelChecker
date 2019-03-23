@@ -1,6 +1,6 @@
 import sys
 import os
-
+import tokens
 
 class GMReader:
 	def __init__(self, input_file):
@@ -49,26 +49,26 @@ class BooleanSystemGeneratorWriter:
 
 		system = []
 		for var_id in range(len(priorities)):
-			equation_lhs = "x" + str(var_id)
+			equation_lhs = tokens.VAR + str(var_id)
 			if int(priorities[var_id]) % 2 == 0:    #even priority
-				equation_lhs = equation_lhs + " =max "
+				equation_lhs = equation_lhs + " " +  tokens.EQMAX + " "
 			elif int(priorities[var_id]) % 2 != 0:
-				equation_lhs = equation_lhs + " =min "  #odd priority
+				equation_lhs = equation_lhs + " " + tokens.EQMIN + " "  #odd priority
 
 			op = ""
 			if players[var_id] == self._winner:
-				op = " or "
+				op = " " + tokens.OR + " "
 			else:
-				op = " and "
+				op = " " + tokens.AND + " "
 
 			equation_rhs = ""
 			succ_counter = 0
 			for succ in successors[var_id]:
 				#priority = ids_priors[succ]    #priority of current successor
 				if succ_counter == 0:   #
-					equation_rhs = "x" + str(identifiers_new_identifiers[succ])
+					equation_rhs = tokens.VAR + str(identifiers_new_identifiers[succ])
 				elif succ_counter > 0:
-					equation_rhs = equation_rhs + op + "x" + str(identifiers_new_identifiers[succ])
+					equation_rhs = equation_rhs + op + tokens.VAR + str(identifiers_new_identifiers[succ])
 
 				succ_counter += 1
 			system.append(equation_lhs + equation_rhs)
