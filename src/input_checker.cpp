@@ -7,7 +7,7 @@ InputChecker::find_used_operators_equation(ExpNode *rhs, set<string> &operators)
 	if (rhs)
 	{
 		//if current node is not a variable (then it's an operator)
-		if (rhs->get_node_name()[0] != 'x')
+		if (rhs->get_node_name()[0] != VAR)
 		{   //variables begin with the 'x' character
 			operators.insert(rhs->get_node_name());
 			//handle any arity (up to 6)
@@ -28,7 +28,7 @@ InputChecker::get_phi_identifiers() const
 	for (int i = 0; i < eq_mv->size(); i++)
 	{
 		//first 3 characters must be 'p', 'h', 'i'
-		if (((*eq_mv)[i]->get_id()).compare(0, 3, "phi") == 0)
+		if (((*eq_mv)[i]->get_id()).compare(0, 3, PHI) == 0)
 		{
 			used_phi_id_vec.push_back((*eq_mv)[i]->get_id());
 		}
@@ -44,7 +44,7 @@ InputChecker::find_used_operators_system() const
 	for (int i = 0; i < eq_mv->size(); i++)
 	{
 		//if it is an actual equation
-		if ((*eq_mv)[i]->get_id()[0] == 'x')
+		if ((*eq_mv)[i]->get_id()[0] == VAR)
 		{
 			find_used_operators_equation((*eq_mv)[i]->get_exp_node(), used_operators);  //modifies 'used_operators'
 		}
@@ -60,7 +60,7 @@ int InputChecker::find_max_left_index() const
 	{
 		//if it is an actual equation
 		string curr_id = (*eq_mv)[i]->get_id();
-		if (curr_id[0] == 'x')
+		if (curr_id[0] == VAR)
 		{
 			string var_index = MoveComposer::extract_index_from_variable(curr_id);
 			int var_index_int = atoi(var_index.c_str());
@@ -92,7 +92,7 @@ InputChecker::get_missing_moves()
 		for (int i = 0; i < basis_size; i++)
 		{
 			//create the following needed identifier: phi_i_op
-			string needed_phi_id = "phi_";
+			string needed_phi_id = PHI_UNDERSCORE;
 
 			//convert 'i' into a string
 			string str_i;
@@ -141,7 +141,7 @@ InputChecker::find_out_of_bound_index() const
 	{
 		//if it is an actual equation
 		string curr_id = (*eq_mv)[i]->get_id();
-		if (curr_id[0] == 'x')
+		if (curr_id[0] == VAR)
 		{
 			int curr_max = ExpNode::get_max_index_in_equation((*eq_mv)[i]->get_exp_node());
 			if (curr_max > max_left_index)

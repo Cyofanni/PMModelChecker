@@ -188,14 +188,14 @@ main(int argc, char *argv[])
 					MoveComposer mv_comp(eqs_moves, atoi(argv[3]));
 					map<Position,ExpNode*> composite_moves = mv_comp.system_composer();
 					map<Position,ExpNode*>::iterator loop_iter;
-					for (loop_iter = composite_moves.begin(); loop_iter != composite_moves.end(); loop_iter++)
+					/*for (loop_iter = composite_moves.begin(); loop_iter != composite_moves.end(); loop_iter++)
 					{
 						cout << "Position:" << "(" << (loop_iter->first).get_b_element() << "," << (loop_iter->first).get_eq_index() << "):";
 						cout << "  Move: ";
 						ExpNode::print_equation_infix(loop_iter->second, stdout);
 						cout << endl;
 					}
-					cout << endl;
+					cout << endl;*/
 
 					//create a Solver object and solve the system
 					int lattice_height;
@@ -220,6 +220,18 @@ main(int argc, char *argv[])
 					cout << "CHAOTIC ITERATION'S OUTCOME:" << endl;
 					Solver::print_pm_matrix(final_matrix_chaotic, atoi(argv[3]), eq_counter);
 					Solver::pretty_print_pm_matrix(final_matrix_worklist, atoi(argv[3]), eq_counter, lattice_height, basis_names);
+
+					for (loop_iter = composite_moves.begin(); loop_iter != composite_moves.end(); loop_iter++)
+					{
+						delete loop_iter->second;
+					}
+
+					for (int i = 0; i < eqs_moves->size(); i++)
+					{
+						delete (*eqs_moves)[i];
+						delete (*eqs_moves)[i]->get_exp_node();
+					};
+					delete eqs_moves;
 				}
 				else
 				{
@@ -241,9 +253,8 @@ main(int argc, char *argv[])
 				}
 			}
 
-
-		if (strcmp(argv[1], "-normalize") == 0)
-		{
+			if (strcmp(argv[1], "-normalize") == 0)
+			{
 				yyin = fopen(argv[2], "r");
 				if (yyin)
 				{
@@ -274,6 +285,21 @@ main(int argc, char *argv[])
 						ExpNode::print_equation_infix(rhs_1, normalization_output);
 						fprintf(normalization_output, "\n");
 					}
+
+					for (int i = 0; i < eqs->size(); i++)
+					{
+						delete (*eqs)[i];
+						delete (*eqs)[i]->get_exp_node();
+					}
+					delete eqs;
+
+					for (int i = 0; i < normalized_system.size(); i++)
+					{
+						delete normalized_system[i];
+						delete normalized_system[i]->get_exp_node();
+					}
+
+					fclose(normalization_output);
 				}
 				else
 				{

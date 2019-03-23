@@ -19,7 +19,7 @@ Solver::comp_symb_prog_meas(const Position &p, ExpNode *formula,
 	if (!(formula->left) and !(formula->right))
 	{
 		string atom = formula->get_node_name();
-		if (atom != "true" and atom != "false")
+		if (atom != TRUE_ATOM and atom != FALSE_ATOM)
 		{   //if it is an atom like [b_0,1] etc...
 			//get indices of the logical atom
 			string h_str = MoveComposer::extract_basis_from_atom(atom);
@@ -53,7 +53,7 @@ Solver::comp_symb_prog_meas(const Position &p, ExpNode *formula,
 
 			return;
 		}
-		else if (atom == "true")
+		else if (atom == TRUE_ATOM)
 		{  //if it is a 'true' 'atom'
 			for (int i = 0; i < system_size; i++)
 			{
@@ -62,7 +62,7 @@ Solver::comp_symb_prog_meas(const Position &p, ExpNode *formula,
 
 			return;
 		}
-		else if (atom == "false")
+		else if (atom == FALSE_ATOM)
 		{  //if it is a 'true' 'atom'
 			for (int i = 0; i < system_size; i++)
 			{
@@ -79,7 +79,7 @@ Solver::comp_symb_prog_meas(const Position &p, ExpNode *formula,
 		comp_symb_prog_meas(p, formula->left, delta, prog_meas_matr, pm_value);
 		comp_symb_prog_meas(p, formula->right, delta, prog_meas_matr, pm_value_1);
 
-		if (formula->get_node_name() == "or")
+		if (formula->get_node_name() == OR)
 		{	//it's a minimum
 			if (lex_vectors(pm_value, pm_value_1, 0))
 			{
@@ -90,7 +90,7 @@ Solver::comp_symb_prog_meas(const Position &p, ExpNode *formula,
 				pm_value = pm_value_1;
 			}
 		}
-		else if (formula->get_node_name() == "and")
+		else if (formula->get_node_name() == AND)
 		{  //it's a maximum
 			if (lex_vectors(pm_value, pm_value_1, 0))
 			{
@@ -127,7 +127,8 @@ Solver::solve_system_worklist()
 	vector< vector < vector<int> > > prog_meas_matr(basis_size, vector<vector<int> >(system_size, vector<int>(system_size)));
 
 	DependencyGraph depgraph_obj(symb_E_moves, basis_size, system_size);
-	map<Position,vector<Position> > depgraph = depgraph_obj.get_dependency_graph();
+	map<Position*,vector<Position*> > depgraph_map = depgraph_obj.get_dependency_graph();
+	vector<set<Position*> > sccs = depgraph_obj.tarjan();   //get strongly connected components
 
 	for (int i = 0; i < basis_size; i++)
 	{	//loop on basis elements, +1 because empty set is added
@@ -141,14 +142,27 @@ Solver::solve_system_worklist()
 	}
 
 	vector<Position> worklist(basis_size*system_size, Position(0,0));
-	for (int i = 0; i < basis_size; i++)
+
+	//iterate over the sccs
+	int worklist_counter = 0;
+	set<Position*>::iterator set_it;
+	for (int i = 0; i < sccs.size(); i++)
+	{
+		for (set_it = sccs[i].begin(); set_it != sccs[i].end(); set_it++)
+		{
+			worklist[worklist_counter] = **set_it;
+			worklist_counter++;
+		}
+	}
+
+	/*for (int i = 0; i < basis_size; i++)
 	{
 		for (int j = 0; j < system_size; j++)
 		{
 			Position p(i, j);
 			worklist[i*system_size + j] = p;
 		}
-	}
+	}*/
 
 	int iteration_counter = 0;
 
@@ -168,14 +182,14 @@ Solver::solve_system_worklist()
 			vector<int> delta;
 			map<int,string>::const_iterator it = min_max_eq.find(v.get_eq_index());
 			string fixpoint = it->second;   //"=min" or "=max"
-			if (fixpoint == "=max")
+			if (fixpoint == EQMAX)
 			{		//null vector
 				for (int c = 0; c < system_size; c++)
 				{
 					delta.push_back(0);
 				}
 			}
-			else if (fixpoint == "=min")
+			else if (fixpoint == EQMIN)
 			{	//some 1's
 				for (int c = 0; c < system_size; c++)
 				{
@@ -211,12 +225,13 @@ Solver::solve_system_worklist()
 				}*/
 				//else{
 					Position p(j, k);
-					map<Position,vector<Position> >::const_iterator iter = depgraph.find(p);  //find dependencies of (b_j, k)
-					if (iter != depgraph.end())
+					map<Position*,vector<Position*> >::iterator iter = depgraph_obj.find_pos_in_pred(p);  //find dependencies of (b_j, k)
+
+					if (iter != depgraph_map.end())
 					{
 						for (int i = 0; i < iter->second.size(); i++)
 						{   //loop on dependencies of (b_j, k)
-							Position p1 = iter->second[i];
+							Position p1 = *(iter->second[i]);
 							//worklist.insert(worklist.begin(), p1);   //add each dependency to the worklist
 							worklist.push_back(p1);
 						}
@@ -249,7 +264,7 @@ Solver::solve_system_worklist()
 		iteration_counter++;
 	}
 
-	cout << "WORKLIST'S NUMBER OF ITERATIONS: " << iteration_counter << endl;
+	//cout << "WORKLIST'S NUMBER OF ITERATIONS: " << iteration_counter << endl;
 	return prog_meas_matr;
 }
 
@@ -299,14 +314,14 @@ Solver::solve_system_chaotic_iteration()
 					vector<int> delta;
 					map<int,string>::const_iterator it = min_max_eq.find(p.get_eq_index());
 					string fixpoint = it->second;   //"=min" or "=max"
-					if (fixpoint == "=max")
+					if (fixpoint == EQMAX)
 					{		//null vector
 						for (int k = 0; k < system_size; k++)
 						{
 							delta.push_back(0);
 						}
 					}
-					else if (fixpoint == "=min")
+					else if (fixpoint == EQMIN)
 					{	//some 1's
 						for (int k = 0; k < system_size; k++)
 						{
@@ -378,7 +393,7 @@ Solver::solve_system_chaotic_iteration()
 		iteration_counter++;
 	}
 
-	cout << "CHAOTIC NUMBER OF ITERATIONS: " << iteration_counter << endl;
+	//cout << "CHAOTIC NUMBER OF ITERATIONS: " << iteration_counter << endl;
 	return prog_meas_matr;
 }
 

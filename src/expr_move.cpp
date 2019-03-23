@@ -284,7 +284,7 @@ EqSystem::mucalculus_normalizer_system(vector<Equation*> system)
 		string left_id = (system[i])->get_id();
 		string eq_type = (system[i])->get_eq_type();
 
-		if (left_id.substr(0, 3) == "phi")
+		if (left_id.substr(0, 3) == PHI)
 		{
 			res.push_back(system[i]);
 			continue;
@@ -334,10 +334,10 @@ Equation::mucalculus_normalizer_equation(ExpNode *eq_rhs, string left_id, string
 	if (eq_rhs)
 	{
 		Equation *new_eq; //it will be added  to 'equations'
-		string new_var = "x";
+		string new_var = VAR_S;
 
 		//if current node is an variable
-		if (eq_rhs->get_node_name()[0] == 'x')
+		if (eq_rhs->get_node_name()[0] == VAR)
 		{
 			ExpNode *new_rhs = new ExpNode(eq_rhs->get_node_name(), 0, 0);
 			new_eq = new Equation(left_id, eq_type, new_rhs);
@@ -351,7 +351,7 @@ Equation::mucalculus_normalizer_equation(ExpNode *eq_rhs, string left_id, string
 			if (eq_rhs->left != 0 and eq_rhs->right == 0)
 			{
 				ExpNode *left_child = eq_rhs->left;
-				if (left_child->get_node_name()[0] == 'x')
+				if (left_child->get_node_name()[0] == VAR)
 				{
 					ExpNode *new_rhs = new ExpNode(eq_rhs->get_node_name(), left_child);
 					new_eq = new Equation(left_id, eq_type, new_rhs);
@@ -359,7 +359,7 @@ Equation::mucalculus_normalizer_equation(ExpNode *eq_rhs, string left_id, string
 					equations.push_back(new_eq);
 					return max_index;
 				}
-				else if (left_child->get_node_name()[0] != 'x')
+				else if (left_child->get_node_name()[0] != VAR)
 				{
 					int curr_left_index = max_index + 1;
 					string str_var_index;
@@ -382,7 +382,7 @@ Equation::mucalculus_normalizer_equation(ExpNode *eq_rhs, string left_id, string
 			ExpNode *left_child = eq_rhs->left;
 			ExpNode *right_child = eq_rhs->right;
 			//if both children are variables
-			if (left_child->get_node_name()[0] == 'x' and right_child->get_node_name()[0] == 'x')
+			if (left_child->get_node_name()[0] == VAR and right_child->get_node_name()[0] == VAR)
 			{
 				ExpNode *new_rhs = new ExpNode(eq_rhs->get_node_name(), left_child, right_child);
 				new_eq = new Equation(left_id, eq_type, new_rhs);
@@ -390,7 +390,7 @@ Equation::mucalculus_normalizer_equation(ExpNode *eq_rhs, string left_id, string
 				equations.push_back(new_eq);
 				return max_index;
 			}
-			else if (left_child->get_node_name()[0] == 'x' and right_child->get_node_name()[0] != 'x')
+			else if (left_child->get_node_name()[0] == VAR and right_child->get_node_name()[0] != VAR)
 			{
 				int curr_right_index = max_index + 1;
 				string str_var_index;
@@ -407,7 +407,7 @@ Equation::mucalculus_normalizer_equation(ExpNode *eq_rhs, string left_id, string
 
 				return mucalculus_normalizer_equation(eq_rhs->right, new_var, eq_type, max_index + 1, equations);
 			}
-			else if (left_child->get_node_name()[0] != 'x' and right_child->get_node_name()[0] == 'x')
+			else if (left_child->get_node_name()[0] != VAR and right_child->get_node_name()[0] == VAR)
 			{
 				int curr_left_index = max_index + 1;
 				string str_var_index;
@@ -425,7 +425,7 @@ Equation::mucalculus_normalizer_equation(ExpNode *eq_rhs, string left_id, string
 
 				return 1 + mucalculus_normalizer_equation(eq_rhs->left, new_var, eq_type, max_index + 1, equations);
 			}
-			else if (left_child->get_node_name()[0] != 'x' and right_child->get_node_name()[0] != 'x')
+			else if (left_child->get_node_name()[0] != VAR and right_child->get_node_name()[0] != VAR)
 			{
 				int curr_left_index = max_index + 1;
 				string str_var_index;
@@ -438,7 +438,7 @@ Equation::mucalculus_normalizer_equation(ExpNode *eq_rhs, string left_id, string
 				int max_index_left = mucalculus_normalizer_equation(eq_rhs->left, new_var, eq_type, max_index + 1, equations);
 
 				int curr_right_index = max_index_left + 1;
-				string new_var_1 = "x";
+				string new_var_1 = VAR_S;
 				stringstream ss_1;
 				ss_1 << curr_right_index;
 				str_var_index = ss_1.str();

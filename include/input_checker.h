@@ -3,6 +3,7 @@
 
 #include "expr_move.h"
 #include "move_composer.h"
+#include "tokens.h"
 #include <set>
 
 using namespace std;

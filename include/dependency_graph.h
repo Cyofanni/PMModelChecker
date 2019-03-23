@@ -23,16 +23,14 @@ private:
 	 */
 
 	//gets position and its formula
-	
-	map<Position*,vector<Position*> >::iterator find_pos_in_pred(const Position& pos);
-	
+
 	void
 	add_to_pred(const Position &pos, ExpNode *formula);
-	
+
 	void
 	strong_connect(Position *p, int &ind, stack<Position*> &st, set<Position*> &Sset,
 						int &comp_counter, vector<set<Position*> > &components);
-	
+
 public:
 	//build adjacency lists inside the constructor
 	DependencyGraph(const map<Position,ExpNode*> &symb_E_moves, int basis_size, int system_size);
@@ -40,7 +38,9 @@ public:
 
 	map<Position*,vector<Position*> >
 	get_dependency_graph() const;
-	
+
+	map<Position*,vector<Position*> >::iterator find_pos_in_pred(const Position& pos);
+
 	vector<set<Position*> >
 	tarjan();
 

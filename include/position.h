@@ -9,16 +9,21 @@ private:
 	//Position could be a graph node
 	mutable int index; 		//needed by Tarjan's algorithm
 	mutable int lowlink;	//needed by Tarjan's algorithm
-	mutable bool defined;	//needed by Tarjan's algorithm
 	mutable bool on_stack;	//needed by Tarjan's algorithm
 
 public:
 	Position();
-	Position(int b_el, int eq_in, int i=-1, int l=-1, bool d=false, bool o=false);
+	Position(int b_el, int eq_in, int i=-1, int l=0, bool o=false);
 	Position(const Position& p);
 
 	Position&
 	operator=(const Position &p);
+	
+	bool
+	operator==(const Position &p);
+	
+	bool
+	operator!=(const Position &p);
 
 	int
 	get_b_element() const;
@@ -37,12 +42,6 @@ public:
 	
 	void
 	set_lowlink(int l) const;
-	
-	bool
-	is_defined() const;
-	
-	void
-	set_defined(bool def) const;
 	
 	bool
 	is_on_stack() const;

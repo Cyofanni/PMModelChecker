@@ -7,6 +7,8 @@
 #include "y.tab.h"
 %}
 AND    and
+BOX    box
+DIAMOND    diamond
 OR    or
 EQMAX    =max
 PHI    phi_[0-9]+_[a-z]+
@@ -25,7 +27,9 @@ EQMIN    =min
 %{
 %}
 {AND}    {yylval.id = strdup(yytext); return AND_TOK;}
+{BOX}    {yylval.id = strdup(yytext); return BOX_TOK;}
 {PHI}    {yylval.id = strdup(yytext); return PHI_TOK;}
+{DIAMOND}    {yylval.id = strdup(yytext); return DIAMOND_TOK;}
 {FALSE}    {yylval.id = strdup(yytext); return FALSE_TOK;}
 {PHI_PROP}    {yylval.id = strdup(yytext); return PHI_PROP_TOK;}
 {EQ}    {yylval.id = strdup(yytext); return EQ_TOK;}

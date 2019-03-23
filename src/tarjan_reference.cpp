@@ -129,7 +129,7 @@ public:
 			}
 		}
 
-		/*set<GraphNode*>::iterator set_it;
+		set<GraphNode*>::iterator set_it;
 		for (int i = 0; i < components.size(); i++)
 		{
 
@@ -138,7 +138,7 @@ public:
 				cout << (*set_it)->n << " ";
 			}
 			cout << endl;
-		}*/
+		}
 
 		return components;
 	}

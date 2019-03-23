@@ -2,21 +2,44 @@
 
 Position::Position(){}
 
-Position::Position(int b_el, int eq_in, int i, int l, 
-					bool d, bool o): b_element(b_el), eq_index(eq_in), index(i), lowlink(l),
-					defined(d), on_stack(o) {}
+Position::Position(int b_el, int eq_in, int i, int l, bool o)
+{ 
+	b_element = b_el;
+	eq_index = eq_in;
+	index = -1;
+	lowlink = 0;
+	on_stack = false;
+}
 
 Position::Position(const Position& p)
 {
 	this->b_element = p.b_element;
 	this->eq_index = p.eq_index;
+	this->index = p.index;
+	this->lowlink = p.lowlink;
+	this->on_stack = p.on_stack;
 }
 
 Position&
-Position::operator=(const Position& p)
+Position::operator=(const Position &p)
 {
 	this->b_element = p.b_element;
 	this->eq_index = p.eq_index;
+	this->index = p.index;
+	this->lowlink = p.lowlink;
+	this->on_stack = p.on_stack;
+}
+
+bool
+Position::operator==(const Position &p)
+{
+	return (this->b_element == p.b_element) and (this->eq_index == p.eq_index);
+}
+
+bool
+Position::operator!=(const Position &p)
+{
+	return (this->b_element != p.b_element) and (this->eq_index != p.eq_index);
 }
 
 int
@@ -52,18 +75,6 @@ void
 Position::set_lowlink(int l) const
 {
 	lowlink = l;
-}
-
-bool
-Position::is_defined() const
-{
-	return defined;
-}
-
-void
-Position::set_defined(bool def) const
-{
-	defined = def;
 }
 
 bool

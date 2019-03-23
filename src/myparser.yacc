@@ -18,7 +18,11 @@ void yyerror(char *s);
 }
 %left AND_TOK
 %token <op> AND_TOK
+%left BOX_TOK
+%token <op> BOX_TOK
 %token <id> PHI_TOK
+%left DIAMOND_TOK
+%token <op> DIAMOND_TOK
 %left FALSE_TOK
 %token <op> FALSE_TOK
 %token <id> PHI_PROP_TOK
@@ -59,6 +63,8 @@ expr_eq:  ID_TOK  {$$ = new ExpNode($1,0,0);}
  | PROP_TOK  {$$ = new ExpNode($1,0,0);}
   | '(' expr_eq ')'  {$$ = $2;}
   | expr_eq AND_TOK expr_eq  {$$ = new ExpNode($2,$1,$3);}
+  | BOX_TOK expr_eq  {$$ = new ExpNode($1,$2);}
+  | DIAMOND_TOK expr_eq  {$$ = new ExpNode($1,$2);}
   | expr_eq OR_TOK expr_eq  {$$ = new ExpNode($2,$1,$3);}
 ;
 %%

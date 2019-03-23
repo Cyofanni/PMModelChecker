@@ -31,7 +31,7 @@ DependencyGraph::add_to_pred(const Position &pos, ExpNode *formula)
 	for (int i = 0; i < leaves.size(); i++)
 	{
 		string atom = leaves[i]->get_node_name();
-		if (atom != "true" and atom != "false")
+		if (atom != TRUE_ATOM and atom != FALSE_ATOM)
 		{   //because atoms 'true' and 'false' don't contain a game position
 			string j_str = MoveComposer::extract_basis_from_atom(atom);
 			string k_str = MoveComposer::extract_index_from_atom(atom);

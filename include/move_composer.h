@@ -17,6 +17,7 @@
 #include "position.h"
 #include "operator.h"
 #include "expr_move.h"
+#include "tokens.h"
 
 using namespace std;
 

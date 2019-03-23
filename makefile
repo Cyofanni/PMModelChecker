@@ -1,4 +1,4 @@
-CCC = g++
+CCC = g++ -std=c++11
 CCFLAGS= -O2 -Wno-write-strings 
 LEX = flex
 LFLAGS= -8     
@@ -31,11 +31,11 @@ src/input_checker.o: src/input_checker.cpp include/input_checker.h
 src/operator.o: src/operator.cpp include/operator.h
 	${CCC} -c -o src/operator.o src/operator.cpp
 
-src/position.o: src/position.cpp include/position.h
-	${CCC} -c -o src/position.o src/position.cpp
-
 src/expr_move.o: src/expr_move.cpp include/expr_move.h
 	${CCC} -c -o src/expr_move.o src/expr_move.cpp
+
+src/position.o: src/position.cpp include/position.h
+	${CCC} -c -o src/position.o src/position.cpp
 
 src/y.tab.o: src/myparser.yacc
 	${CCC} ${CCFLAGS} -o src/y.tab.o src/y.tab.c -c 

@@ -8,6 +8,11 @@ MuCalculusMoveGenerator::MuCalculusMoveGenerator(const char *lts_file, int basis
 	this->basis_size = basis_size;
 }
 
+MuCalculusMoveGenerator::~MuCalculusMoveGenerator()
+{
+	delete lts_file;
+}
+
 vector<string>
 MuCalculusMoveGenerator::generate_box_diamond_move(bool isbox)
 {
@@ -25,20 +30,20 @@ MuCalculusMoveGenerator::generate_box_diamond_move(bool isbox)
 		string name;
 		if (isbox)
 		{
-			op = "and";
-			name = "box";
+			op = AND;
+			name = BOX;
 		}
 		else
 		{
-			op = "or";
-			name = "diamond";
+			op = OR;
+			name = DIAMOND;
 		}
 
 		map<int,vector<int> >::iterator loop_iter;
 		for (loop_iter = lts.begin(); loop_iter != lts.end(); loop_iter++)
 		{
 			string current_move;  //move to be built as string
-			string move_identifier = "phi";
+			string move_identifier = PHI;
 			string equation;
 
 			string str_basis_element;

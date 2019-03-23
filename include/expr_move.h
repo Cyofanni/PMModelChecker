@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include "../include/tokens.h"
 
 using namespace std;
 
@@ -28,6 +29,7 @@ public:
 
 	ExpNode(string n_name, ExpNode* l_node, ExpNode *r_node = 0, ExpNode *r1_node = 0, ExpNode *r2_node = 0,
 			ExpNode *r3_node = 0, ExpNode *r4_node = 0);
+
 	string
 	get_node_name() const;
 

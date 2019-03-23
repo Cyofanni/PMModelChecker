@@ -5,6 +5,7 @@
  * accepts an lts.
  */
 #include "aldebaran_parser.h"
+#include "tokens.h"
 #include <sstream>
 
 using namespace std;
@@ -17,6 +18,7 @@ private:
 
 public:
 	MuCalculusMoveGenerator(const char *lts_file, int basis_size);
+	~MuCalculusMoveGenerator();
 
 	//generate and return moves as strings, for each basis element
 	//if isbox == true => generate moves for 'box'
