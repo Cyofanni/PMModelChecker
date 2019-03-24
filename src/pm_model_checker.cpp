@@ -127,10 +127,14 @@ main(int argc, char *argv[])
 					MuCalculusMoveGenerator muc_gen(argv[4], atoi(argv[3]));
 					vector<string> box_moves = muc_gen.generate_box_diamond_move(true);
 					vector<string> diamond_moves = muc_gen.generate_box_diamond_move(false);
-					yyin = fopen(argv[2], "a");
+
+					yyin = fopen(argv[2], "r");
 					//add computed moves to input system
 					if (yyin)
 					{
+						fclose(yyin);
+						yyin = fopen(argv[2], "a");
+
 						for (int i = 0; i < box_moves.size(); i++)
 						{
 							const char *curr_box_move = box_moves[i].c_str();
@@ -146,6 +150,7 @@ main(int argc, char *argv[])
 						{
 							return 1;
 						}
+						fclose(yyin);
 
 						eqs_moves = root->get_equations();  //get system + moves
 					}

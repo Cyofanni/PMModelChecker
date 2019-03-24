@@ -8,11 +8,6 @@ MuCalculusMoveGenerator::MuCalculusMoveGenerator(const char *lts_file, int basis
 	this->basis_size = basis_size;
 }
 
-MuCalculusMoveGenerator::~MuCalculusMoveGenerator()
-{
-	delete lts_file;
-}
-
 vector<string>
 MuCalculusMoveGenerator::generate_box_diamond_move(bool isbox)
 {
