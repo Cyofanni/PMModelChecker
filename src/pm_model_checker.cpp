@@ -291,18 +291,17 @@ main(int argc, char *argv[])
 						fprintf(normalization_output, "\n");
 					}
 
-					for (int i = 0; i < eqs->size(); i++)
+					/*for (int i = 0; i < eqs->size(); i++)
 					{
 						delete (*eqs)[i];
 						delete (*eqs)[i]->get_exp_node();
 					}
-					delete eqs;
-
+					
 					for (int i = 0; i < normalized_system.size(); i++)
 					{
 						delete normalized_system[i];
 						delete normalized_system[i]->get_exp_node();
-					}
+					}*/
 
 					fclose(normalization_output);
 				}
