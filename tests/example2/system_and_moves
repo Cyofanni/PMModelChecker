@@ -1,0 +1,10 @@
+x0 =min p0 or (diamond (x0))
+x1 =max x0 and (box (x1))
+
+#moves for and, or, and p0
+phi_{a}_and = [{a},0] and [{a},1]
+phi_{b}_and = [{b},0] and [{b},1]
+phi_{a}_or = [{a},0] or [{a},1]
+phi_{b}_or = [{b},0] or [{b},1]
+phi_{a}_p0 = false
+phi_{b}_p0 = true
