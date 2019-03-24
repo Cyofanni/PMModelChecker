@@ -1,0 +1,8 @@
+x0 =min (x1 and x3)
+x3 =min (diamond x2)
+x4 =max (box x0)
+x1 =max (x4 or x5)
+x5 =max (x1 and x2)
+x2 =min (diamond x6)
+x6 =min (box x7)
+x7 =min (x2 and x0)

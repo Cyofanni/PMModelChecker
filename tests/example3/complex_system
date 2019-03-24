@@ -1,0 +1,4 @@
+x0 =min x1 and (diamond x2)
+x1 =max (box x0) or (x1 and x2)
+x2 =min diamond (box (x2 and x0))
+
