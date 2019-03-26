@@ -9,7 +9,7 @@ verification techniques for temporal logics (especially for the μ-calculus). So
 recent researches showed that a game-theoretic characterisation of the solution
 of equational systems can be devised. Such characterisation is given in terms
 of a parity game (a two-player, zero-sum game), which is referred to as fixpoint
-game. Relying on this theoretical basis, this thesis aims at developing a generic
+game. Relying on this theoretical basis, this work aims at developing a generic
 game-theoretic algorithm for finding the solution of a given system of equations.
 We think that such algorithm can be profitably used for all the aforementioned
 verification and model checking tasks (because, as we will see, the winner of the
