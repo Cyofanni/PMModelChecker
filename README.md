@@ -26,4 +26,4 @@ lattice._
 # References
 Paolo Baldan, Barbara König, Christina Mika-Michalski, and Tommaso Padoan. 2018.<br/> 
 _Fixpoint Games on Continuous Lattices._<br/>
-https://arxiv.org/abs/1810.11404 arXiv:1810.11404
+https://arxiv.org/abs/1810.11404
