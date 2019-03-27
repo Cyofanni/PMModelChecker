@@ -268,7 +268,7 @@ Solver::solve_system_worklist()
 		iteration_counter++;
 	}
 
-	cout << "WORKLIST'S NUMBER OF ITERATIONS: " << iteration_counter << endl;
+	//cout << "WORKLIST'S NUMBER OF ITERATIONS: " << iteration_counter << endl;
 	return prog_meas_matr;
 }
 
