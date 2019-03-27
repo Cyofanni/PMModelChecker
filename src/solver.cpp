@@ -233,7 +233,11 @@ Solver::solve_system_worklist()
 						{   //loop on dependencies of (b_j, k)
 							Position p1 = *(iter->second[i]);
 							//worklist.insert(worklist.begin(), p1);   //add each dependency to the worklist
-							worklist.push_back(p1);
+							vector<Position>::iterator p1_iter = find(worklist.begin(), worklist.end(), p1);
+							if (p1_iter == worklist.end())
+							{
+								worklist.push_back(p1);
+							}
 						}
 						prog_meas_matr[j][k] = y;
 					}
@@ -264,7 +268,7 @@ Solver::solve_system_worklist()
 		iteration_counter++;
 	}
 
-	//cout << "WORKLIST'S NUMBER OF ITERATIONS: " << iteration_counter << endl;
+	cout << "WORKLIST'S NUMBER OF ITERATIONS: " << iteration_counter << endl;
 	return prog_meas_matr;
 }
 
@@ -384,11 +388,6 @@ Solver::solve_system_chaotic_iteration()
 			cout << endl;
 		}
 		cout << "**************************************" << endl << endl;*/
-
-
-		/*if (changed == false){
-			break;
-		}*/
 
 		iteration_counter++;
 	}
