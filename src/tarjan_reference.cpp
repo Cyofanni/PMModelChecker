@@ -1,3 +1,11 @@
+/*"While there is nothing special about the order of the nodes within each strongly connected component,
+ * one useful property of the algorithm is that no strongly connected component will be identified before
+ * any of its successors.
+ * Therefore, the order in which the strongly connected components are identified constitutes a reverse topological
+ * sort of the DAG formed by the strongly connected components." (from Wikipedia).
+ */
+
+
 #include <iostream>
 #include <vector>
 #include <map>
@@ -129,16 +137,29 @@ public:
 			}
 		}
 
+
+		cout << "TARJAN'S ORIGINAL ORDER (REVERSE TOPOLOGICAL SORTING):" << endl;
 		set<GraphNode*>::iterator set_it;
 		for (int i = 0; i < components.size(); i++)
 		{
-
 			for (set_it = components[i].begin(); set_it != components[i].end(); set_it++)
 			{
 				cout << (*set_it)->n << " ";
 			}
 			cout << endl;
 		}
+		cout << endl;
+
+		cout << "TOPOLOGICAL SORTING:" << endl;
+		for (int i = components.size()-1; i >= 0; i--)
+		{
+			for (set_it = components[i].begin(); set_it != components[i].end(); set_it++)
+			{
+				cout << (*set_it)->n << " ";
+			}
+			cout << endl;
+		}
+
 
 		return components;
 	}
@@ -152,18 +173,18 @@ int main(){
 	GraphNode g4(4);
 	GraphNode g5(5);
 	GraphNode g6(6);
-	GraphNode g7(7);
-	GraphNode g8(8);
+	//GraphNode g7(7);
+	//GraphNode g8(8);
 
 	map<GraphNode*,vector<GraphNode*> > adj;
-	adj[&g1] = {&g2};
+	adj[&g1] = {&g3};
 	adj[&g2] = {&g3};
-	adj[&g3] = {&g1};
-	adj[&g4] = {&g2, &g3, &g5};
+	adj[&g3] = {&g2};
+	adj[&g4] = {&g5,&g2};
 	adj[&g5] = {&g4, &g6};
-	adj[&g6] = {&g3, &g7};
-	adj[&g7] = {&g6};
-	adj[&g8] = {&g7, &g8, &g5};
+	adj[&g6] = {};
+	//adj[&g7] = {&g6};
+	//adj[&g8] = {&g7, &g8, &g5};
 
 	Graph graph(adj);
 
