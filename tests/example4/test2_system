@@ -1,0 +1,23 @@
+x0 =max x11 or x9
+x1 =max x19 and x1 and x8
+x2 =min x12 or x19 or x6 or x18
+x3 =min x19 and x7 and x5 and x17 and x6
+x4 =max x3 and x11 and x13 and x4
+x5 =min x1 and x13 and x8 and x6
+x6 =max x13 and x9 and x18
+x7 =max x12 or x5 or x0
+x8 =min x2 or x7 or x14 or x17 or x6
+x9 =max x12 or x16 or x6
+x10 =max x3 or x1 or x17 or x4
+x11 =max x19 and x13 and x0 and x6
+x12 =min x3 or x11 or x5 or x9 or x4
+x13 =min x1 and x5
+x14 =max x8 or x14
+x15 =max x7 and x5 and x14 and x0 and x9
+x16 =min x2 or x18
+x17 =min x12 or x15 or x8 or x16 or x17
+x18 =min x4 or x18
+x19 =min x12 and x3 and x7 and x10
+
+phi_0_and = [b_0,0] and [b_0,1]
+phi_0_or = [b_0,0] or [b_0,1]

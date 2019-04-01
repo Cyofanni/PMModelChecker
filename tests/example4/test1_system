@@ -1,0 +1,13 @@
+x0 =max x6 or x7 or x2
+x1 =min x1 and x3 and x2
+x2 =max x3 or x7
+x3 =min x8 and x4 and x9
+x4 =min x5 or x6
+x5 =min x8 or x7
+x6 =min x1 and x5 and x7 and x9
+x7 =max x4 or x5 or x6
+x8 =min x4 or x6 or x9
+x9 =max x5 and x3 and x0
+
+phi_0_and = [b_0,0] and [b_0,1]
+phi_0_or = [b_0,0] or [b_0,1]
