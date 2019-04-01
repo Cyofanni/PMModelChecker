@@ -14,7 +14,7 @@ class GMReader:
 		nicknames = []
 		line_counter = 0   #used to skip header line ('parity n')
 		for line in self._file_handler.readlines():
-			if line_counter >= 1:
+			#if line_counter >= 1:
 				columns = line.split(" ")
 
 				identifiers.append(columns[0])
@@ -26,7 +26,7 @@ class GMReader:
 
 				nicknames.append(columns[4])
 
-			line_counter += 1
+				line_counter += 1
 		return [identifiers, priorities, players, successors, nicknames]
 
 
